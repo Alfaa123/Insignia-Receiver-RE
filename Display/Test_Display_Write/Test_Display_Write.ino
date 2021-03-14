@@ -3,11 +3,12 @@
 static int PIN_CS = 4;
 
 void setup() {
+  Serial.begin(115200);
   SPI.begin();
-  SPI.beginTransaction(SPISettings(500000, LSBFIRST, SPI_MODE2));
+  SPI.beginTransaction(SPISettings(125000, LSBFIRST, SPI_MODE2));
   pinMode(PIN_CS, OUTPUT);
   digitalWrite(PIN_CS, HIGH);
-  delay (1000);
+  delay (3000);
 
 //For setting display mode
 digitalWrite(PIN_CS, LOW);
@@ -32,27 +33,35 @@ digitalWrite(PIN_CS, HIGH);
 
 
 for (int y = 192; y < 228; y++){
-//delay(1);
 digitalWrite(PIN_CS, LOW);
-//delay(1);
 SPI.transfer(y);
-//delay(1);
-SPI.transfer(0);
-//delay(1);
+SPI.transfer(255);
 digitalWrite(PIN_CS, HIGH);
 }
 
 for (int y = 192; y < 228; y++){
-for (int x = 0; x < 256; x++){
-//delay(1);
+for (int x = 1; x < 256; x=x*2){
+Serial.print(y-192);
+Serial.print("   ");
+Serial.println(x, BIN);
+while(!Serial.available()){
+delay(500);
 digitalWrite(PIN_CS, LOW);
-//delay(1);
 SPI.transfer(y);
-//delay(1);
 SPI.transfer(x);
-delay(1);
+digitalWrite(PIN_CS, HIGH);
+delay(500);
+digitalWrite(PIN_CS, LOW);
+SPI.transfer(y);
+SPI.transfer(0);
 digitalWrite(PIN_CS, HIGH);
 }
+Serial.read();
+}
+digitalWrite(PIN_CS, LOW);
+SPI.transfer(y);
+SPI.transfer(255);
+digitalWrite(PIN_CS, HIGH);
 }
 }
 
