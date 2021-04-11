@@ -127,7 +127,6 @@ powerRelay(1,0);
 
 writeSubDisplay(88);
 writeDisplay("TEST");
-clearDisplay(1);
 
 
 
