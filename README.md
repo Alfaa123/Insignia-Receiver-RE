@@ -1,6 +1,8 @@
 # Insignia-Receiver-RE
 Reverse engineering an old Insignia Receiver for no reason at all
 
+![Hacked](Photos/IMG_20210710_180621932.jpg)
+
 # Project Description
 This project aims to take a working Insignia 2 channel stereo receiver and replace the main control chip (a small, undocumented IC) and replace it with an Arduino that will perform much of the same function.
 

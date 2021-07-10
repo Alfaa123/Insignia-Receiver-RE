@@ -124,10 +124,9 @@ displayBrightness(1,8);
 powerRelay(1,0);
 
 
-
-writeSubDisplay(88);
-writeDisplay("TEST");
-
+clearDisplay();
+//writeSubDisplay(88);
+writeDisplay("HACKED");
 
 
 }
