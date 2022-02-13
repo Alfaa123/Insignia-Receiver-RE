@@ -22,10 +22,20 @@ typedef union {
 
 evcDataUnion EVCData;
 
+/*
+One Stripe = Data In
+Two Stripes = Chip Enable
+Three Stripes = Clk*/
+
 static int PIN_CS = 4;
 static int PIN_EVC_CLK = 5;
 static int PIN_EVC_DA = 6;
 static int PIN_EVC_CS = 7;
+
+/*static int PIN_EVC_CLK = 14;
+static int PIN_EVC_DA = 15;
+static int PIN_EVC_CS = 16;*/
+
 //these are the two character map char arrays for the eight 14 segment displays
 static unsigned char firstByteFourteenSegement[] = {144, 0, 0, 0, 68, 68, 144, 0,
                                            0, 0, 0, 0, 80, 0, 0, 0, 0, 0,
@@ -50,8 +60,10 @@ void writeChar(char i, char position) {
   address = address - (3 * position);
   digitalWrite(PIN_CS, LOW);
   SPI.transfer(address);
+  if (i > 43){
   SPI.transfer(firstByteFourteenSegement[i - 43]);
   SPI.transfer(secondByteFourteenSegement[i - 43]);
+  }
   digitalWrite(PIN_CS, HIGH);
 }
 
@@ -141,19 +153,25 @@ void powerRelay(char relayNumber, bool onOff) {
 void sendEVCData() {
   digitalWrite(PIN_EVC_CLK, LOW);
   digitalWrite(PIN_EVC_CS, LOW);
+  digitalWrite(PIN_EVC_CS, HIGH);
   shiftOut(PIN_EVC_DA, PIN_EVC_CLK, LSBFIRST, EVCData.b1);
   shiftOut(PIN_EVC_DA, PIN_EVC_CLK, LSBFIRST, EVCData.b2);
   shiftOut(PIN_EVC_DA, PIN_EVC_CLK, LSBFIRST, EVCData.b3);
   shiftOut(PIN_EVC_DA, PIN_EVC_CLK, LSBFIRST, EVCData.b4);
   shiftOut(PIN_EVC_DA, PIN_EVC_CLK, LSBFIRST, EVCData.b5);
-  digitalWrite(PIN_EVC_CS, HIGH);
+  digitalWrite(PIN_EVC_CS, LOW);
+  /*Serial.println(EVCData.b1, HEX);
+  Serial.println(EVCData.b2, HEX);
+  Serial.println(EVCData.b3, HEX);
+  Serial.println(EVCData.b4, HEX);
+  Serial.println(EVCData.b5, HEX);*/
 }
 
 
 void setup() {
 
 EVCData.Address = 130;
-EVCData.Input = 4;
+EVCData.Input = 0;
 EVCData.Gain = 0;
 EVCData.Volume = 50;
 EVCData.Channel = 3;
@@ -162,13 +180,15 @@ EVCData.Bass = 0;
 EVCData.SuperBass = 0;
 EVCData.GPOA = 0;
   
-  //Serial.begin(115200);
+  Serial.begin(115200);
   SPI.begin();
   SPI.beginTransaction(SPISettings(125000, LSBFIRST, SPI_MODE2));
   pinMode(PIN_CS, OUTPUT);
   pinMode(PIN_EVC_CS, OUTPUT);
+  pinMode(PIN_EVC_CLK, OUTPUT);
+  pinMode(PIN_EVC_DA, OUTPUT);
   digitalWrite(PIN_CS, HIGH);
-  digitalWrite(PIN_EVC_CS, HIGH);
+  digitalWrite(PIN_EVC_CS, LOW);
   delay (300);
 
   //For turning on display and setting dimming
@@ -177,9 +197,10 @@ EVCData.GPOA = 0;
   //For turning on and off main relays
   powerRelay(1, 1);
   delay (1000);
-  powerRelay(2, 1);
+  powerRelay(2, 0);
   clearDisplay();
-  writeDisplay("HACKED");
+  writeDisplay("TEST");
+  
   sendEVCData();
 
 
