@@ -1,6 +1,8 @@
 # Insignia-Receiver-RE
 Reverse engineering an old Insignia Receiver for no reason at all
 
+# NOTE: After assembling and disassembling this reciever 10+ times unfortunately the main board no longer works. I suspect some traces were destroyed or some components broke. Therefore this project has been abandoned.
+
 ![Hacked](Photos/IMG_20210710_180621932.jpg)
 
 # Project Description
